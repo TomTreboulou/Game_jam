@@ -87,9 +87,9 @@ class timer {
         this.text = game.add.text(20, 20, "", {font: "30px Arial", fill: "#fff"}).setScrollFactor(0);
     }
     draw_t() {
-        if (this.second >= 0 && this.min >= 0)
+        if ((this.second >= 0 && this.min > 0) || (this.second > 0 && this.min == 0))
             this.second --;
-        if (this.second <= 0 && this.min > 0) {
+        if (this.second < 0 && this.min > 0) {
             this.second = 59;
             this.min --;
         }

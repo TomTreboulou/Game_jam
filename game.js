@@ -33,6 +33,7 @@ var thunes;
 var ground2;
 
 //var monster;
+var monstres_rand;
 var gemme1 = [];
 var gemme2 = [];
 var gemme3 = [];
@@ -79,7 +80,7 @@ function preload ()
     this.load.image('player_def_attack1', 'img/player/def/player_def_attack1.png');
     this.load.image('player_def_attack2', 'img/player/def/player_def_attack2.png');
     this.load.image('player_def_attack3', 'img/player/def/player_def_attack3.png');
-    
+
     this.load.image('collisionLeft', 'img/collisionLeft.png');
     this.load.image('collisionRight', 'img/collisionRight.png');
     this.load.image('monster2', 'monster2.png');
@@ -107,9 +108,11 @@ function preload ()
     this.load.image('occlusion', 'img/occlusion.png');
 
     this.load.image('ground', 'img/sol.png');
+
     // VIE
-    for (let i = 0; i < 10; i++)    
-        this.load.image('vie' + i, 'img/player/vie/vie' + i + '.png');    
+    for (let i = 0; i < 10; i++)
+        this.load.image('vie' + i, 'img/player/vie/vie' + i + '.png');
+
     // MUSIQUES
     this.load.audio('musiqueDeFond', 'son/musiques/fond.ogg');
 
@@ -131,7 +134,13 @@ function preload ()
 
 function lose_hp() {
     if (test_hp % 90 == 0) {
-        playe.hp -= 1;
+        if (achat3 == 3) {
+            playe.hp -= 0.5;
+        } else
+            playe.hp -= 1;
+        setTimeout(function() {
+            rire.play();
+        }, 2000);
         coup.play();
         test_hp++;
     } else {
@@ -188,11 +197,11 @@ function create ()
     keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
     // GEMMES
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 15; i++)
         gemme1[i] = new gemme(Math.random() * 900, Math.random() * 900 + 1260, 1, this, playe);
-    for (var i = 0; i < 6; i++)
+    for (var i = 0; i < 8; i++)
         gemme2[i] = new gemme(Math.random() * 2100, Math.random() * 3800, 2, this, playe);
-    for (var i = 0; i < 6; i++)
+    for (var i = 0; i < 8; i++)
         gemme3[i] = new gemme(Math.random() * 2100, Math.random() * 3800, 3, this, playe);
 
         // PLAYER
@@ -202,26 +211,39 @@ function create ()
         playe.sprite.setScale(0.4);
         playe.lifeText = this.add.text(0, 0, playe.hp + " hp", {font: "20px Arial", fill: "255"}).setOrigin(0.5);
         // WALLS
-        for (let i = 0; i < 7; i++) {
-            let x = Math.random() * 900;
-            let y = 2160-Math.sqrt((900*900)-(x * x));
-            walls[i] = new wall(x,y,this);
-        }
-        for (let i = 7; i < 27; i++) {
-            let x = Math.random() * 1720;
-            let y = 2160-Math.sqrt((1520*1520)-(x * x));
-            walls[i] = new wall(x,y,this);
-        }
-        for (let i = 27; i < 57; i++) {
-            let x = Math.random() * 1920;
-            let y = 2160-Math.sqrt((1920*1920)-(x * x));
-            walls[i] = new wall(x,y,this);
-        }
-        for (let i = 57; i < 107; i++) {
-            let x = Math.random() * 2020;
-            let y = 2160-Math.sqrt((2070*27070)-(x * x));
-            walls[i] = new wall(x,y,this);
-        }
+        walls[0] = new wall(0, 130, this);
+        walls[1] = new wall(180, 130, this);
+        walls[2] = new wall(180 * 2, 130, this);
+        walls[31] = new wall(180 * 2, 130 * 2, this);
+        walls[32] = new wall(180 * 2, 130 * 3, this);
+        walls[3] = new wall(180 * 3, 130, this);
+        walls[4] = new wall(180 * 4, 130, this);
+        walls[5] = new wall(180 * 5, 130, this);
+        walls[6] = new wall(180 * 6, 130, this);
+        walls[7] = new wall(180 * 7, 130, this);
+        walls[8] = new wall(180 * 8, 130, this);
+        walls[29] = new wall(180 * 8, 130 * 2, this);
+        walls[30] = new wall(180 * 8, 130 * 3, this);
+        walls[9] = new wall(0, 130 + 180, this);
+        walls[10] = new wall(0, 130 + 180 * 2, this);
+        walls[11] = new wall(0, 130 + 180 * 3, this);
+        walls[12] = new wall(0, 130 + 180 * 4, this);
+        walls[13] = new wall(180, 130 + 180 * 4, this);
+        walls[14] = new wall(180 * 2, 130 + 180 * 4, this);
+        walls[15] = new wall(180 * 4, 130 + 180 * 4, this);
+        walls[16] = new wall(180 * 4, 130 + 180 * 3, this);
+        walls[17] = new wall(180 * 6, 130 + 180 * 2, this);
+        walls[18] = new wall(180 * 6, 130 + 180, this);
+        walls[19] = new wall(180 * 5, 130 + 180 * 4, this);
+        walls[20] = new wall(180 * 5, 130 + 180 * 5, this);
+        walls[21] = new wall(180 * 6, 130 + 180 * 4, this);
+        walls[22] = new wall(180 * 6, 130 + 180 * 6, this);
+        walls[23] = new wall(180 * 8, 130 + 180 * 8, this);
+        walls[24] = new wall(180 * 8, 130 + 180 * 9, this);
+        walls[25] = new wall(180 * 9, 130 + 180 * 10, this);
+        walls[26] = new wall(180 * 9, 130 + 180 * 11, this);
+        walls[27] = new wall(180 * 7, 130 + 180 * 6, this);
+        walls[28] = new wall(180 * 9, 130 + 180 * 9, this);
         /*
         walls[0] = new wall(0, 21609-720, this);
         walls[1] = new wall(0, 21609-970, this);
@@ -274,13 +296,23 @@ function create ()
         for (let i = 0; i < 50; i++) {
             let k = Math.random() * 10000 + 3847;
             let j = Math.random() * k;
-            monster[i] = new shadow(j, 2160-Math.sqrt((k*k)-(j * j)), 2, this.physics.add.image(0, 0, 'haine1'), 0, 720*3, this);
+            monster[i] = new shadow(j, 2160-Math.sqrt((k*k)-(j * j)), 1, this.physics.add.image(0, 0, 'haine1'), 0, 720*3, this);
             animateSprite(monster[i].img, 'haine', 4, 500);
             this.physics.add.overlap(collisionLeft, monster[i].img, readyToAttack, null, this);
             this.physics.add.overlap(collisionRight, monster[i].img, readyToAttack, null, this);
             this.physics.add.overlap(playe.sprite, monster[i].img, lose_hp, null, this);
         }
 
+        monstres_rand = [];
+        for (let i = 0; i < 10; i++) {
+            monstres_rand[i] = new shadow(Math.random*3740,Math.random*1440,1,this.physics.add.image(0, 0, 'haine1'),Math.random*3740,Math.random*1440, this);
+            animateSprite(monster[i].img, 'haine', 4, 500);
+            this.physics.add.overlap(collisionLeft, monstres_rand[i].img, readyToAttack, null, this);
+            this.physics.add.overlap(collisionRight, monstres_rand[i].img, readyToAttack, null, this);
+            this.physics.add.overlap(playe.sprite, monstres_rand[i].img, lose_hp, null, this);
+        }
+
+        //inventaire
         inv = new inventory();
 
         // Proprietes gemmes
@@ -343,19 +375,18 @@ function actionButton(game) {
             thunes = 35;
             armor = game.add.image(220, 595, 'chestplate').setOrigin(0).setScrollFactor(0);
             if (soul3.compt.compt < 35) {
-                
                 thunes -= soul3.compt.compt;
                 soul3.compt.compt = 0;
             } else {
                 soul3.compt.compt -= thunes;
-                thunes = 0;                
+                thunes = 0;
             }
             if (soul2.compt.compt < thunes) {
                 thunes -= soul2.compt.compt;
                 soul2.compt.compt = 0;
             } else {
                 soul2.compt.compt -= thunes;
-                thunes = 0;                
+                thunes = 0;
             }
             if (soul1.compt.compt < thunes) {
                 thunes -= soul1.compt.compt;
@@ -509,8 +540,20 @@ function update()
             console.log("ils arrivent");
         }
     }*/
-    for (let i = 0; i < 50 && time.min < 2; i++)
+    if (time.min < 5 && time.min > 3)
+        for (let i = 0; i < 10; i++) {
+            monstres_rand[i].xobj = 0;
+            monstres_rand[i].yobj = 2160;
+        }
+    for (let i = 0; i < 10; i++)
+        if (monstres_rand[i].x == monstres_rand[i].xobj && monstres_rand[i].y == monstres_rand[i].yobj && monstres_rand[i].img.life > 0) {
+            monstres_rand[i].xobj = Math.random() * 3740;
+            monstres_rand[i].yobj = Math.random() * 1440;
+        }
+    for (let i = 0; i < 50 && time.min < 5; i++)
         monster[i].Move();
+    for (let i = 0; i < 10; i++)
+        monstres_rand[i].Move();
     for (let i = 0; i < 50; i++) {
         if (monster[i].img.life > 0 && ((monster[i].xobj-monster[i].x)*(monster[i].xobj-monster[i].x)+(monster[i].yobj-monster[i].y)*(monster[i].yobj-monster[i].y)) <= 10000) {
             monster[i].img.life = 0;
@@ -524,8 +567,20 @@ function update()
             monster[i].img.disableBody(true, true);
         }
     }
+    for (let i = 0; i < 10; i++) {
+        if (monstres_rand[i].img.life > 0 && ((monstres_rand[i].xobj-monstres_rand[i].x)*(monstres_rand[i].xobj-monstres_rand[i].x)+(monstres_rand[i].yobj-monstres_rand[i].y)*(monstres_rand[i].yobj-monstres_rand[i].y)) <= 10000) {
+            monstres_rand[i].img.life = 0;
+            brain.Dgt();
+        }
+        else if (monstres_rand[i].img.life > 0) {
+            monstres_rand[i].img.setPosition(monstres_rand[i].x, monstres_rand[i].y);
+        }
+        if (monstres_rand[i].img.life <= 0) {
+            monstres_rand[i].img.disableBody(true, true);
+        }
+    }
     if (brain.life == 0) {
-        alert("Game Over");
+        alert("Game Over: 10 spectres de haine sont parvenus au cerveau");
         brain.life--;
     }
     modify_player_mvt(400);
@@ -562,7 +617,6 @@ function update()
     if(keyTwo.isDown && inv.axe) {
         playe.weapon = "axe";
     }
-
 }
 
 let animations = [];
@@ -580,7 +634,7 @@ function animateSprite(sprite, name, indexs, delay) {
 
 function my_check_block(left, right, up, down)
 {
-    for(var i = 0; i <= 106; i++) {
+    for(var i = 0; i < walls.length; i++) {
         if (walls[i].x + 120 - left > playe.sprite.x && walls[i].x < playe.sprite.x + 120 - right && walls[i].y + 280  - up > playe.sprite.y && walls[i].y < playe.sprite.y - down) {
             return (0);
         }
