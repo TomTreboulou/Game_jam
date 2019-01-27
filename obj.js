@@ -1,35 +1,68 @@
 class Player {
-    constructor(sprite, x, y) {
+    constructor(sprite, x, y, hp_bar) {
         this.sprite = sprite;
+        this.hp_bar = hp_bar;
         this.x = x;
         this.y = y;
         this.mv = {x: 0, y: 0};
         this.attackDelay = 0;
-
+        this.hp = 10;
         this.isAnimated = false;
         this.isMoving = false;
+        this.damage = 2;
+        this.weapon = "";
+        this.def = false;
     }
     setMove(x, y) {
         this.mv.x = x;
         this.mv.y = y;
     }
     update() {
+        this.lifeText.setText(this.hp + " hp");
         if(this.attackDelay > 0) {
             this.attackDelay -= 1;
         }
         this.lifeText.setPosition(this.sprite.x, this.sprite.y + 70);
+        //this.hp_bar.setPosition(this.sprite.x, this.sprite.y + 70);
+        if(this.weapon == "axe") {
+            playe.damage = 3;
+        } else if(this.weapon == "epee") {
+            playe.damage = 6;
+        }
+    }
+    getType() {
+        if(this.def) {
+            return "_def";
+        } else if(this.weapon == "axe") {
+            return "_axe";
+        } else if(this.weapon == "epee") {
+            return "_epee";
+        } else {
+            return "";
+        }
+    }
+    getWeaponType() {
+        if(this.weapon == "axe") {
+            return "hache";
+        } else if(this.weapon == "epee") {
+            return "epee";
+        } else {
+            return false;
+        }
     }
 }
 
 class shadow {
-    constructor(x, y, type, sprite, xobj, yobj) {
+    constructor(x, y, type, sprite, xobj, yobj, game) {
         this.x = x;
         this.y = y;
         this.type = type;
         this.img = sprite;
+        this.hitbox = game.physics.add.image(0, 0, 'hitbox_haine');
+        this.hitbox.alpha = 0;
         this.xobj = xobj;
         this.yobj = yobj;
-        this.img.life = 2;
+        this.img.life = 12;
     }
     Move() {
         if (this.x - this.xobj < 1 && this.x - this.xobj > -1 && this.y - this.yobj < 1 && this.y - this.yobj > -1) {
@@ -54,8 +87,9 @@ class timer {
         this.text = game.add.text(20, 20, "", {font: "30px Arial", fill: "#fff"}).setScrollFactor(0);
     }
     draw_t() {
-        this.second --;
-        if (this.second <= 0) {
+        if (this.second >= 0 && this.min >= 0)
+            this.second --;
+        if (this.second <= 0 && this.min > 0) {
             this.second = 59;
             this.min --;
         }
@@ -112,47 +146,79 @@ class soul {
 
 class wall {
     constructor(x, y, game) {
-        this.x = x;
-        this.y = y;
+        this.x = x - 10;
+        this.y = y - 10;
         this.size = 180;
         this.toiture = game.add.image(this.x, this.y, 'toiture');
         this.toiture.setScale(0.5);
-        this.facade = game.add.image(this.x, this.y + this.size, 'facade');
-        this.facade.setScale(0.5);
+        this.facade = game.add.image(this.x, this.y + this.size - 20, 'facade');
+        this.facade.setScale(0.45);
         this.hitbox = game.physics.add.staticGroup();
-        this.hitbox = this.hitbox.create(this.x, this.y + this.size, 'toiture').alpha = 0;
+        this.hitbox = this.hitbox.create(this.x, this.y + this.size, 'toiture');
+        this.hitbox.alpha = 0;
     }
 }
 
 class gemme {
-    constructor(x, y, type, game, playe) {
+    constructor(x, y, type, game, playe, gemme) {
         this.x = x;
         this.y = y;
-        this.img = game.physics.add.image(x, y, 'orb_red1');
-        this.img.setScale(0.5);
         this.type = type;
+        if (type == 1) {
+            this.img = game.physics.add.image(x, y, 'orb_red1');
+        } else if (type == 2) {
+            this.img = game.physics.add.image(x, y, 'orb_bleu1');
+        } else if (type == 3) {
+            this.img = game.physics.add.image(x, y, 'orb_gris1');
+        }
+        this.img.setScale(0.5);
         this.img.hp = 100;
         this.img.break_indicator = function() {
             if (this.hp != 100) {
                 if (this.hp == 99) {
                     pioche.play();
-                    soul1.add(1);
+                    if (type == 1)
+                        soul1.add(1);
+                    else if (type == 2)
+                        soul2.add(1);
+                    else
+                        soul3.add(1);
                     this.hp -= 1;
                 }
                 if (this.hp == 50) {
                     pioche.play();
-                    soul1.add(1);
+                    if (type == 1)
+                        soul1.add(1);
+                    else if (type == 2)
+                        soul2.add(1);
+                    else
+                        soul3.add(1);
                     this.hp -= 1;
                 }
                 if (this.hp == 1) {
                     pioche.play();
-                    soul1.add(1);
+                    if (type == 1)
+                        soul1.add(1);
+                    else if (type == 2)
+                        soul2.add(1);
+                    else
+                        soul3.add(1);
                     this.hp -= 1;
                 }
                 if (this.hp > 50) {
-                    this.setTexture('orb_red2');
+                    if (type == 1)
+                        this.setTexture('orb_red2');
+                    else if (type == 2)
+                        this.setTexture('orb_bleu2');
+                    else
+                        this.setTexture('orb_gris2');
                 } else if (this.hp > 0) {
-                    this.setTexture('orb_red3');
+                    if (type == 1)
+                        this.setTexture('orb_red3');
+                    else if (type == 2)
+                        this.setTexture('orb_bleu3');
+                    else
+                        this.setTexture('orb_gris3');
             }
         }
     }
@@ -173,16 +239,16 @@ class inventory {
     constructor() {
         this.epee = false;
         this.arc = false;
+        this.axe = false;
     }
     addItem(item, game) {
         switch(item) {
             case 'epee':
                 this.epee = true;
-                game.add.image(0, 0, 'img/epee.png');
+                playe.damage = 6;
                 break;
-            case 'arc':
-                this.arc = true;
-                game.add.image(100, 0, 'img/arc.png');
+            case 'axe':
+                this.axe = true;
                 break;
             default:
                 console.log("Item not found");
