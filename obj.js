@@ -4,15 +4,20 @@ class Player {
         this.x = x;
         this.y = y;
         this.mv = {x: 0, y: 0};
+        this.attackDelay = 0;
+
+        this.isAnimated = false;
+        this.isMoving = false;
     }
     setMove(x, y) {
         this.mv.x = x;
         this.mv.y = y;
     }
-    attack() {
-        monster.forEach((m) => {
-            
-        });
+    update() {
+        if(this.attackDelay > 0) {
+            this.attackDelay -= 1;
+        }
+        this.lifeText.setPosition(this.sprite.x, this.sprite.y + 70);
     }
 }
 
@@ -24,6 +29,7 @@ class shadow {
         this.img = sprite;
         this.xobj = xobj;
         this.yobj = yobj;
+        this.img.life = 2;
     }
     Move() {
         if (this.x - this.xobj < 1 && this.x - this.xobj > -1 && this.y - this.yobj < 1 && this.y - this.yobj > -1) {
@@ -42,10 +48,10 @@ class shadow {
 }
 
 class timer {
-    constructor() {
+    constructor(game) {
         this.second = 0;
         this.min = 0;
-        this.text = game.add.text(20, 20, "", {font: "30px Arial", fill: "#fff"});
+        this.text = game.add.text(20, 20, "", {font: "30px Arial", fill: "#fff"}).setScrollFactor(0);
     }
     draw_t() {
         this.second --;
@@ -53,24 +59,22 @@ class timer {
             this.second = 59;
             this.min --;
         }
-        if (this.second < 10)
+        if (this.second < 10) {
             this.text.setText(this.min + ":0" + this.second);
-        else
+        }
+        else {
             this.text.setText(this.min + ":" + this.second);
         }
+    }
     settime(s , m, game) {
         this.second = s;
         this.min = m;
-        this.timer = game.time.events.loop(1000, this.draw_t, this);
+        setInterval(() => {
+            this.draw_t(this);
+        }, 1000);
     }
     delete() {
         this.text.destroy();
-    }
-    gettime() {
-        if (this.second <= 0 && this.min <= 0)
-            return (1);
-        else
-            return (0);
     }
 }
 
@@ -106,24 +110,19 @@ class soul {
     }
 }
 
-class block {
-    constructor(x, y, size) {
+class wall {
+    constructor(x, y, game) {
         this.x = x;
         this.y = y;
-        this.size = size * 2;
+        this.size = 180;
+        this.toiture = game.add.image(this.x, this.y, 'toiture');
+        this.toiture.setScale(0.5);
+        this.facade = game.add.image(this.x, this.y + this.size, 'facade');
+        this.facade.setScale(0.5);
+        this.hitbox = game.physics.add.staticGroup();
+        this.hitbox = this.hitbox.create(this.x, this.y + this.size, 'toiture').alpha = 0;
     }
 }
-
-/*class ath {
-    constructor(x, y, type, game) {
-        this.x = x;
-        this.y = y;
-        this.img = game.add.image(x, y, 'ath' + type)
-        this.type = type;
-    }
-}
-    */
-
 
 class gemme {
     constructor(x, y, type, game, playe) {
@@ -169,12 +168,6 @@ class gemme {
             this.delete()
     }
 }
-class nexus {
-    constructor() {
-        this.x = 0;
-        this.y = 720 * 3;
-        this.img = game.add.image(this.x, this.y, 'nexus.png');
-}
 
 class inventory {
     constructor() {
@@ -194,5 +187,20 @@ class inventory {
             default:
                 console.log("Item not found");
         }
+    }
+}
+
+class nexusClass {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.life = 10;
+        this.wall = 0;
+    }
+    Dgt() {
+        if (this.wall > 0)
+            wall--;
+        else
+            this.life--;
     }
 }
