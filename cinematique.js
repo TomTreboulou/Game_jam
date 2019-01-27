@@ -59,7 +59,7 @@ function preload() {
 
     this.load.audio('voix', 'cinematique/son/voix.wav');
     this.load.audio('crash', 'cinematique/son/crash.mp3');
-    this.load.audio('begin', 'cinematique/son/debut_du_jeu.mp3')
+    //this.load.audio('begin', 'cinematique/son/debut_du_jeu.mp3')
 }
 
 function create() {
@@ -98,7 +98,7 @@ function start(game) {
                     fond.alpha -= 0.1;
                     if(fond.alpha <= 0) {
                         setTimeout(function() {
-                            begin.play();
+                            //begin.play();
                             location.href = "link.html";
                         }, 3000);
                     }
@@ -157,10 +157,3 @@ function start(game) {
         }
     }, 100);
 }
-
-
-
-
-
-
-
